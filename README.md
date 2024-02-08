@@ -36,3 +36,53 @@ MSW에서 제공해주는 CLI 도구인 mockServiceWorker.js 파일을 ./public 
 
 (Service Worker에 대해서는 많은 자료들이 있으니까 참고하시기 바랍니다. [MDN-Service Worker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API) [카카오 기술블로그-서비스 워커에 대해 알아보고 Mock Response 만들기](https://fe-developers.kakaoent.com/2022/221208-service-worker/) [web.dev-서비스 워커](https://web.dev/learn/pwa/service-workers?hl=ko))
 
+### Handler 생성
+
+가짜 응답을 작성해야 하는데요, 이때 REST API 응답 방법과 유사하니 이미 지식이 있으신 분들이라면 쉽게 작성이 가능합니다.
+
+주의해야 할 점은, MSW의 버전에 따라 코드 작성 방법이 다르다는 점입니다.
+
+1.X 버전은 `rest` 라는 객체를 사용하지만 2.X 버전은 `http` 라는 객체를 사용합니다.
+
+또한, 사용하는 객체가 다르기 때문에 객체 내에서 호출되는 속성도 약간의 차이가 존재합니다.
+
+따라서 본인의 버전에 맞게 작성해주셔야 합니다.
+
+저는 2.X 버전을 사용해 코드를 작성했습니다.
+
+```jsx
+// /src/mock/handlers.ts
+import { http, HttpResponse } from 'msw'
+ 
+export const handlers = [
+  http.get('/api/login', () => {
+    return HttpResponse.json(
+			{
+				userName: "JunHo",
+				NickName: "JunhOpportunity",
+				userImage: "https://.../profile/1",
+			},
+			{
+				headers: {
+					Cache: "no-cache",
+				}
+			}
+		)
+  }),
+	http.post("/api/login", () => {
+    return HttpResponse.json(
+      {
+				userName: "JunHo",
+				NickName: "JunhOpportunity",
+				userImage: "https://.../profile/1",
+      },
+      {
+        headers: {
+          Cache: "no-cache",
+          "Set-Cookie": "connect.sid=;HttpOnly;Path=/,max-age=0",
+        },
+      }
+    );
+  })
+]
+```
