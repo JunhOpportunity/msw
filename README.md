@@ -48,9 +48,23 @@ MSW에서 제공해주는 CLI 도구인 mockServiceWorker.js 파일을 ./public 
 
 따라서 본인의 버전에 맞게 작성해주셔야 합니다.
 
-저는 2.X 버전을 사용해 코드를 작성했습니다.
+저는 React 기반의 프로젝트에서는 1.X 버전을, Next 기반의 프로젝트에서는 2.X 버전을 사용해 MSW를 적용시켜 보았으므로 두 버전의 예시 코드들을 모두 사용하도록 하겠습니다.
+```jsx
+// 1.X
+import { rest } from "msw";
+
+export const handlers = [
+	rest.get('/api/login', (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json(null));
+  }),
+  rest.post('/api/login', (req, res, ctx) => {
+    return res(ctx.status(200));
+  }),
+];
+```
 
 ```jsx
+// 2.X
 // /src/mock/handlers.ts
 import { http, HttpResponse } from 'msw'
  
